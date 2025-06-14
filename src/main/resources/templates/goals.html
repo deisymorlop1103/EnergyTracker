@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header(title='Gestión de Metas')}">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: navbar}"></div>
+
+    <div class="container mt-5">
+        <h1 class="mb-4">Mis Metas de Sostenibilidad</h1>
+
+        <a th:href="@{/goals/form}" class="btn btn-primary mb-3">Añadir Nueva Meta</a>
+
+        <div th:if="${goals.empty}" class="alert alert-info">
+            No tienes metas registradas.
+        </div>
+        <div th:unless="${goals.empty}">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Descripción</th>
+                        <th>Valor Objetivo</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Completada</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="goal : ${goals}">
+                        <td th:text="${goal.id}"></td>
+                        <td th:text="${goal.description}"></td>
+                        <td th:text="${goal.targetValue}"></td>
+                        <td th:text="${#temporals.format(goal.startDate, 'dd-MM-yyyy')}"></td>
+                        <td th:text="${#temporals.format(goal.endDate, 'dd-MM-yyyy')}"></td>
+                        <td th:text="${goal.completed} ? 'Sí' : 'No'"></td>
+                        <td>
+                            <a th:href="@{/goals/form(id=${goal.id})}" class="btn btn-warning btn-sm">Editar</a>
+                            <form th:action="@{/goals/delete/{id}(id=${goal.id}, userId=${goal.userId})}" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta meta?');">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    <script th:replace="~{fragments/header :: scripts}"></script>
+    <script th:replace="~{fragments/header :: scripts2}"></script>
+    <script th:replace="~{fragments/header :: scripts3}"></script>
+</body>
+</html>

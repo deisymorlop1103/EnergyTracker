@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header(title=${goal.id} ? 'Editar Meta' : 'Añadir Meta')}">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: navbar}"></div>
+
+    <div class="container mt-5">
+        <h1 class="mb-4" th:text="${goal.id} ? 'Editar Meta' : 'Añadir Nueva Meta'"></h1>
+
+        <form th:action="@{/goals/save}" th:object="${goal}" method="post">
+            <input type="hidden" th:field="*{id}" />
+            <input type="hidden" th:field="*{userId}" />
+
+            <div class="form-group">
+                <label for="description">Descripción:</label>
+                <input type="text" id="description" th:field="*{description}" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="targetValue">Valor Objetivo:</label>
+                <input type="number" id="targetValue" th:field="*{targetValue}" class="form-control" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="startDate">Fecha de Inicio:</label>
+                <input type="date" id="startDate" th:field="*{startDate}" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="endDate">Fecha de Fin:</label>
+                <input type="date" id="endDate" th:field="*{endDate}" class="form-control" required>
+            </div>
+            <div class="form-check mb-3">
+                <input type="checkbox" id="completed" th:field="*{completed}" class="form-check-input">
+                <label class="form-check-label" for="completed">Completada</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar Meta</button>
+            <a th:href="@{/goals(userId=__${goal.userId}__)}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    <script th:replace="~{fragments/header :: scripts}"></script>
+    <script th:replace="~{fragments/header :: scripts2}"></script>
+    <script th:replace="~{fragments/header :: scripts3}"></script>
+</body>
+</html>
