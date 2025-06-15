@@ -42,7 +42,7 @@ public class GoalServiceImpl implements GoalService {
             goal.setCompleted(goalDTO.isCompleted());
             goal.setUserId(goalDTO.getUserId());
         } else {
-            // Crear nueva meta
+            // crear nueva meta
             goal = new SustainabilityGoal();
             goal.setUserId(goalDTO.getUserId());
             goal.setDescription(goalDTO.getDescription());

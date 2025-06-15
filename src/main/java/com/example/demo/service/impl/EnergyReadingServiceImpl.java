@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.time.LocalDateTime;
-import java.time.YearMonth; // Para trabajar con meses y años
-import java.time.format.DateTimeFormatter; // Para formatear la fecha
+import java.time.YearMonth; 
+import java.time.format.DateTimeFormatter; 
 import java.util.Comparator;
 
 @Service
@@ -89,20 +89,20 @@ public class EnergyReadingServiceImpl implements EnergyReadingService {
         User currentUser = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + userEmail));
 
-        // Define el rango de fechas para el año completo
+        // rango de fechas para el año completo
         LocalDateTime startDate = LocalDateTime.of(year, 1, 1, 0, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(year, 12, 31, 23, 59, 59);
 
-        // Obtener todas las lecturas del usuario para un año en especifico
+        // Obtener todas las lecturas para un año en especifico
         List<EnergyReading> readings = energyReadingRepository.findByUser_UserIdAndTimestampBetween(currentUser.getUserId(), startDate, endDate);
 
-        // Map para consolidar el consumo por mes
+        // Map que consolida el consumo por mes
         Map<YearMonth, Double> monthlyAggregates = new HashMap<>();
         DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
 
         for (EnergyReading reading : readings) {
             YearMonth yearMonth = YearMonth.from(reading.getTimestamp());
-            // Suma el consumo
+            // suma el consumo
             monthlyAggregates.merge(yearMonth, reading.getConsumptionKwh().doubleValue(), Double::sum);
         }
 
@@ -111,7 +111,7 @@ public class EnergyReadingServiceImpl implements EnergyReadingService {
         MonthlyConsumptionDTO minMonth = null;
 
         if (!monthlyAggregates.isEmpty()) {
-            // Convierte el map a una lista de DTOs y encuentra min/max
+            // Convierte el map a una lista de DTOs y encuentra minímo y el máximo de los consumos
             for (Map.Entry<YearMonth, Double> entry : monthlyAggregates.entrySet()) {
                 MonthlyConsumptionDTO currentMonth = new MonthlyConsumptionDTO(entry.getKey().format(monthFormatter), entry.getValue());
                 monthlyBreakdown.add(currentMonth);

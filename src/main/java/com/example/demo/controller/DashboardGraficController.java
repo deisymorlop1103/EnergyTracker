@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.service.EnergyReadingService;
-import com.example.demo.dto.DashboardConsumptionSummaryDTO; // Importa tu DTO
-import com.example.demo.dto.MonthlyConsumptionDTO; // Importa el DTO del mes
+import com.example.demo.dto.DashboardConsumptionSummaryDTO; 
+import com.example.demo.dto.MonthlyConsumptionDTO; 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
-import java.util.ArrayList; // Para listas vacías si no hay datos
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors; // Para mapear los datos para Chart.js
+import java.util.stream.Collectors; 
 
 @Controller
 @RequestMapping("/graficos")
@@ -31,10 +31,10 @@ public class DashboardGraficController {
 
         int targetYear = (year != null) ? year : LocalDate.now().getYear();
 
-        // Obtener el resumen completo de consumo mensual desde tu servicio
+        // Obtener el resumen completo de consumo mensual 
         DashboardConsumptionSummaryDTO summaryDTO = energyReadingService.getMonthlyConsumptionSummaryForUser(authentication, targetYear);
 
-        // Preparar los datos para Chart.js
+        // aQUÍ SE preparan los datos para Chart.js
         List<String> monthlyConsumptionLabels = new ArrayList<>();
         List<Double> monthlyConsumptionData = new ArrayList<>();
         String maxMonthLabel = "N/A";
@@ -53,7 +53,7 @@ public class DashboardGraficController {
                     .map(MonthlyConsumptionDTO::getTotalConsumptionKwh)
                     .collect(Collectors.toList());
 
-            // Extraer los datos del mes máximo y mínimo si existen
+            // se EXTraen los datos del mes máximo y mínimo si hay datos disponibles
             if (summaryDTO.getMaxConsumptionMonth() != null) {
                 maxMonthLabel = summaryDTO.getMaxConsumptionMonth().getMonth();
                 maxConsumptionValue = summaryDTO.getMaxConsumptionMonth().getTotalConsumptionKwh();

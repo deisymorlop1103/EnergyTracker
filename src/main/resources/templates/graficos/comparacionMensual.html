@@ -5,11 +5,9 @@
 <head>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Se mantienen solo los estilos necesarios para la página de gráficos */
         body {
-            /* Puedes eliminar el fondo si quieres que use el genérico de header.html,
-               o mantenerlo si esta página debe tener un fondo diferente. */
-            background-color: #f4f4f4; /* Un fondo neutro para la página de gráficos */
+
+            background-color: #f4f4f4; 
             padding-bottom: 60px;
         }
 
@@ -37,7 +35,7 @@
         .year-selector form {
              display: flex;
              align-items: center;
-             gap: 10px; /* Espacio entre elementos */
+             gap: 10px; 
         }
 
         .summary-text { text-align: center; margin-top: 20px; font-size: 1.1em; color: #ffffff; }
@@ -45,7 +43,7 @@
         .error-message { color: red; text-align: center; margin-top: 20px; }
         
         .navigation-link { text-align: center; margin-top: 30px; }
-        .navigation-link a { /* Este estilo se puede reemplazar usando las clases de Bootstrap "btn btn-info" */
+        .navigation-link a { 
             display: inline-block;
             padding: 10px 20px;
             background-color: #007bff;
@@ -94,11 +92,6 @@
             <p>Mes con <strong>mayor</strong> consumo: <strong><span th:text="${maxMonth}"></span></strong> (<span th:text="${#numbers.formatDecimal(maxConsumption, 0, 2)}"></span> KWh)</p>
             <p>Mes con <strong>menor</strong> consumo: <strong><span th:text="${minMonth}"></span></strong> (<span th:text="${#numbers.formatDecimal(minConsumption, 0, 2)}"></span> KWh)</p>
         </div>
-
-        <!-- <div class="navigation-link">
-            <a th:href="@{/dashboard}" class="btn btn-primary">Ir al histórico de consumos</a>
-        </div> -->
-
     </div> <div th:replace="~{fragments/footer :: footer}"></div>
 
     <script th:inline="javascript">
