@@ -6,7 +6,7 @@
     <div th:replace="~{fragments/header :: navbar}"></div>
 
     <div class="container mt-5">
-        <h1 class="mb-4" th:text="${device.id} ? 'Editar Dispositivo' : 'Añadir Añadir punto de consumo'"></h1>
+        <h1 class="mb-4" th:text="${device.id} ? 'Editar Dispositivo' : ' Añadir punto de consumo'"></h1>
 
         <form th:action="@{/devices/save}" th:object="${device}" method="post">
             <input type="hidden" th:field="*{id}" />

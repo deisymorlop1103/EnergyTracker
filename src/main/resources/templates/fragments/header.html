@@ -6,10 +6,9 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         /* Estilos generales del header/navbar  */
-        body { padding-top: 56px; } 
-        .footer { position: fixed; bottom: 0; width: 100%; height: 60px; line-height: 60px; background-color: #f5f5f5; }
+  .footer { position: fixed; bottom: 0; width: 100%; height: 60px; line-height: 60px; background-color: #f5f5f5; }
 
-        /* ESTILOS ESPECÍFICOS DE index.html */
+       
         body {
             background-image: url("/img/indexImg.jpg"); 
             background-size: cover;
@@ -20,6 +19,8 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            padding-top: 56px; 
+            padding-bottom: 60px;
         }
         #descr,#title {
            color: #ffffff;
@@ -83,7 +84,7 @@
         }
         .btn-primary:hover, 
         .btn-secondary:hover,
-        .btn-success:hover  {
+        .btn-success:hover,.navbar-dark .navbar-nav .nav-link:hover {
             color: #fff;
             background-color: #0000002e;
             border-color: #6c757d;
@@ -111,13 +112,16 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="/dashboard">Dashboard <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="/dashboard">Consumos <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/devices">Consumo</a>
+                    <a class="nav-link" href="/devices">Puntos de Consumo</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/goals">Metas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/graficos/comparacion-mensual">Gráficos</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">

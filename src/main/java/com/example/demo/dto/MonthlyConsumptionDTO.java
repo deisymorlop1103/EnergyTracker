@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MonthlyConsumptionDTO {
-    private String month; // Formato "YYYY-MM", 
+    private String month; // F"YYYY-MM", 
     private Double totalConsumptionKwh; // Consumo total para ese mes
 }

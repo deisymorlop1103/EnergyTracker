@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header(title='Comparación Mensual de Consumo')}">
+    </head>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Se mantienen solo los estilos necesarios para la página de gráficos */
+        body {
+            /* Puedes eliminar el fondo si quieres que use el genérico de header.html,
+               o mantenerlo si esta página debe tener un fondo diferente. */
+            background-color: #f4f4f4; /* Un fondo neutro para la página de gráficos */
+            padding-bottom: 60px;
+        }
+
+        .chart-container {
+            width: 90%;
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        h1, h2 { text-align: center; color: #333; }
+
+        .year-selector {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: transparent;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.09);
+            display: inline-block;
+        }
+        .year-selector form {
+             display: flex;
+             align-items: center;
+             gap: 10px; /* Espacio entre elementos */
+        }
+
+        .summary-text { text-align: center; margin-top: 20px; font-size: 1.1em; color: #ffffff; }
+        .summary-text strong { color: #eeff00; }
+        .error-message { color: red; text-align: center; margin-top: 20px; }
+        
+        .navigation-link { text-align: center; margin-top: 30px; }
+        .navigation-link a { /* Este estilo se puede reemplazar usando las clases de Bootstrap "btn btn-info" */
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .navigation-link a:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div th:replace="~{fragments/header :: navbar}"></div>
+
+    <div class="container mt-5">
+
+        <h1 class="mb-3">Comparación de Consumo Energético Mensual</h1>
+        <h2 class="mb-4">Año: <span th:text="${targetYear}"></span></h2>
+
+        <div class="d-flex justify-content-center">
+            <div class="year-selector">
+                <form th:action="@{/graficos/comparacion-mensual}" method="get">
+                    <label for="yearSelect" class="mb-0">Seleccionar Año:</label>
+                    <select id="yearSelect" name="year" class="form-control">
+                        <option th:each="y : ${#numbers.sequence(T(java.time.LocalDate).now().minusYears(5).getYear(), T(java.time.LocalDate).now().getYear())}"
+                                th:value="${y}" th:text="${y}" th:selected="${y == targetYear}"></option>
+                    </select>
+                    <button type="submit" class="btn btn-success">Mostrar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="monthlyComparisonChart"></canvas>
+        </div>
+
+        <div th:if="${#lists.isEmpty(monthlyConsumptionLabels)}" class="alert alert-info text-center">
+            <p>No hay datos de consumo disponibles para el año <span th:text="${targetYear}"></span>.</p>
+        </div>
+
+        <div th:unless="${#lists.isEmpty(monthlyConsumptionLabels)}" class="summary-text">
+            <p>Mes con <strong>mayor</strong> consumo: <strong><span th:text="${maxMonth}"></span></strong> (<span th:text="${#numbers.formatDecimal(maxConsumption, 0, 2)}"></span> KWh)</p>
+            <p>Mes con <strong>menor</strong> consumo: <strong><span th:text="${minMonth}"></span></strong> (<span th:text="${#numbers.formatDecimal(minConsumption, 0, 2)}"></span> KWh)</p>
+        </div>
+
+        <!-- <div class="navigation-link">
+            <a th:href="@{/dashboard}" class="btn btn-primary">Ir al histórico de consumos</a>
+        </div> -->
+
+    </div> <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script th:inline="javascript">
+        const monthlyConsumptionLabels = /*[[${monthlyConsumptionLabels}]]*/ [];
+        const monthlyConsumptionData = /*[[${monthlyConsumptionData}]]*/ [];
+        const maxMonthData = /*[[${maxMonth}]]*/ 'N/A';
+        const minMonthData = /*[[${minMonth}]]*/ 'N/A';
+
+        if (monthlyConsumptionLabels && monthlyConsumptionLabels.length > 0) {
+            const comparisonCtx = document.getElementById('monthlyComparisonChart').getContext('2d');
+            new Chart(comparisonCtx, {
+                type: 'bar',
+                data: {
+                    labels: monthlyConsumptionLabels.map(label => {
+                        const [year, month] = label.split('-');
+                        const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+                        return monthNames[parseInt(month) - 1] + ' ' + year;
+                    }),
+                    datasets: [{
+                        label: 'Consumo Total Mensual (KWh)',
+                        data: monthlyConsumptionData,
+                        backgroundColor: monthlyConsumptionLabels.map(label => {
+                            if (label === maxMonthData) return 'rgba(255, 99, 132, 0.8)'; // Rojo para el máximo
+                            if (label === minMonthData) return 'rgba(75, 192, 192, 0.8)'; // Verde/Azul para el mínimo
+                            return 'rgba(54, 162, 235, 0.6)'; // Azul estándar
+                        }),
+                        borderColor: monthlyConsumptionLabels.map(label => {
+                            if (label === maxMonthData) return 'rgba(255, 99, 132, 1)';
+                            if (label === minMonthData) return 'rgba(75, 192, 192, 1)';
+                            return 'rgba(54, 162, 235, 1)';
+                        }),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Consumo (KWh)' } },
+                        x: { title: { display: true, text: 'Mes' } }
+                    },
+                    plugins: {
+                        title: { display: true, text: 'Consumo por Mes en el Año Seleccionado' },
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    const label = context[0].label;
+                                    const [monthAbr, year] = label.split(' ');
+                                    const monthNamesFull = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                                    const monthIndex = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'].indexOf(monthAbr);
+                                    return monthNamesFull[monthIndex] + ' ' + year;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        } else {
+            document.getElementById('monthlyComparisonChart').style.display = 'none';
+        }
+    </script>
+
+    <div th:replace="~{fragments/header :: scripts}"></div>
+    <div th:replace="~{fragments/header :: scripts2}"></div>
+    <div th:replace="~{fragments/header :: scripts3}"></div>
+
+</body>
+</html>
